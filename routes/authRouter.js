@@ -26,7 +26,7 @@ router.post('/login', async (req, res) => {
         });
     } 
 
-    console.log(user);
+    // console.log(user);
 
     const compareResult = await bcrypt.compare(password, user.password); 
     if (compareResult) { // 비밀번호가 올바르면 토큰 반환

@@ -73,6 +73,24 @@ router.get('/:id', authMiddleware, async (req, res) => {
     }
 });
 
+router.put('/:id', authMiddleware, async (req, res) => {
+    const id = req.params.id; 
+    const email = req.body.email; 
+    
+    try {
+        const result = await connection.promise().query(`UPDATE user SET email = ? WHERE id=${id}`, [email]); 
+        res.json({
+            success: true, 
+        }); 
+    } catch(err) {
+        console.error(err);
+        res.json({
+            success: false,
+            err,
+        });
+    }
+});
+
 // 회원 탈퇴
 router.delete('/:id', authMiddleware, async (req, res) => {
     const id = req.params.id;
