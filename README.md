@@ -31,3 +31,128 @@ REST API에서는 서버가 session을 가지지 않습니다. 대신에 토큰 
     - 클라이언트는 권한 인증이 필요한 요청을 할 때마다 이 토큰을 헤더에 실어서 보냅니다.
     - 서버는 헤더의 토큰을 검증하고, Payload의 값을 디코딩하여 사용자의 권한을 확인하고 필요한 응답을 합니다.
     - 만약, 토큰이 유효하지 않거나 만료되었다면 새로 로그인을 해서 토큰을 발급받아야합니다.
+
+
+이를 익스프레스를 통해서 구현을 해보았습니다. 
+
+API 명세서는 다음과 같습니다. 
+- [GET] /users 
+    - 유저목록 조회
+    
+    request example
+
+        URL : http://localhost:8084/users
+
+        Body : N/A
+
+    response example
+    ```json
+        {
+            "success": true,
+            "users": [
+                {
+                    "id": 2,
+                    "email": "naver@naver.com",
+                    "password": "$2b$10$sA2Urr8aYt54Y1JQw7FH0enBZyFuv/hQbOc26e2cOy0X14m0SZeVy",
+                    "createdAt": "2022-03-23T10:20:49.000Z"
+                },
+                {
+                    "id": 3,
+                    "email": "naver@naver.com",
+                    "password": "$2b$10$oawFj6lnKe7aRAVD6gXZ6eEs0ACn1m44mZhzd/ah4hBwGEeAvF2T2",
+                    "createdAt": "2022-03-26T13:01:26.000Z"
+                }
+            ]
+        }
+    ``` 
+- [GET] /users/:id
+    - 유저 상세조회
+
+    request example
+
+        URL : http://localhost:8084/users/2
+
+        Header : { 'Access-Token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhc2RmQG5hdmVyLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGExTnRqd3AuTkxlTEJYZ3E4Ny81Rk9VRHdRbUZzYm5PMEljdjlPdlUxT0hJNE1rRDllMGVtIiwiY3JlYXRlZEF0IjoiMjAyMi0wMy0yNlQxMzoxNjowOC4wMDBaIiwiaWF0IjoxNjQ4MzAwOTQzLCJleHAiOjE2NDgzMDEwMDN9.5bFJIUkMJYHDwq2VaxVcNdBk1vSmpqvnzF9QLGeLp8A' }
+
+        Body : N/A
+
+    response example
+    ```json
+        {
+            "success": true,
+            "user": [
+                {
+                    "id": 2,
+                    "email": "naver@naver.com",
+                    "password": "$2b$10$sA2Urr8aYt54Y1JQw7FH0enBZyFuv/hQbOc26e2cOy0X14m0SZeVy",
+                    "createdAt": "2022-03-23T10:20:49.000Z"
+                }
+            ]
+        }
+    ```
+- [POST] /users
+    - 회원가입
+
+    request example
+
+        URL : http://localhost:8084/users
+
+        Body : { 'email' : 'asdf@naver.com', 'password': 'asdf' }
+
+    response example
+    ```json
+    {
+        "success": true,
+        "insertId": 4
+    }
+    ```
+- [PUT] /users/:id
+    - 유저 수정
+
+    request example
+
+        URL : http://localhost:8084/users/3
+
+        Header : { 'Access-Token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhc2RmQG5hdmVyLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGExTnRqd3AuTkxlTEJYZ3E4Ny81Rk9VRHdRbUZzYm5PMEljdjlPdlUxT0hJNE1rRDllMGVtIiwiY3JlYXRlZEF0IjoiMjAyMi0wMy0yNlQxMzoxNjowOC4wMDBaIiwiaWF0IjoxNjQ4MzAwOTQzLCJleHAiOjE2NDgzMDEwMDN9.5bFJIUkMJYHDwq2VaxVcNdBk1vSmpqvnzF9QLGeLp8A' }
+
+        Body : { 'email': 'asdf123@naver.com' }
+
+    response example
+    ```json
+    {
+        "success": true
+    }
+    ```
+- [DELETE] /users/:id
+    - 유저 탈퇴
+
+    request example
+
+        URL : http://localhost:8084/users/3
+
+        Header : { 'Access-Token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhc2RmQG5hdmVyLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGExTnRqd3AuTkxlTEJYZ3E4Ny81Rk9VRHdRbUZzYm5PMEljdjlPdlUxT0hJNE1rRDllMGVtIiwiY3JlYXRlZEF0IjoiMjAyMi0wMy0yNlQxMzoxNjowOC4wMDBaIiwiaWF0IjoxNjQ4MzAwOTQzLCJleHAiOjE2NDgzMDEwMDN9.5bFJIUkMJYHDwq2VaxVcNdBk1vSmpqvnzF9QLGeLp8A' }
+
+        Body : N/A
+
+    response example
+    ```json
+    {
+        "success": true
+    }
+    ```
+- [POST] /auth/login
+    - 로그인
+
+    request example
+
+        URL : http://localhost:8084/auth/login
+
+        Body : { 'email': 'asdf@naver.com', 'password': 'asdf' }
+
+    response example
+    ```json
+    {
+        "success": true,
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhc2RmQG5hdmVyLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGExTnRqd3AuTkxlTEJYZ3E4Ny81Rk9VRHdRbUZzYm5PMEljdjlPdlUxT0hJNE1rRDllMGVtIiwiY3JlYXRlZEF0IjoiMjAyMi0wMy0yNlQxMzoxNjowOC4wMDBaIiwiaWF0IjoxNjQ4MzAwNTg0LCJleHAiOjE2NDgzMDA2NDR9.PCKyeoueKsT_JnJEy83OKaxbmzSdVEMp1IrkN_rUBgw"
+    }
+    ```
